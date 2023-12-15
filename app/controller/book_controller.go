@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"github.com/rezaif79-ri/iris-api-101/app/domain"
@@ -49,7 +51,12 @@ func (bookController) GetList(ctx *context.Context) {
 		},
 	}
 
-	ctx.JSON(books)
+	ctx.StatusCode(http.StatusOK)
+	ctx.JSON(map[string]interface{}{
+		"status":  http.StatusOK,
+		"message": "OK",
+		"data":    books,
+	})
 	// TIP: negotiate the response between server's prioritizes
 	// and client's requirements, instead of ctx.JSON:
 	// ctx.Negotiation().JSON().MsgPack().Protobuf()
