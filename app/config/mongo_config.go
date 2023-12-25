@@ -13,7 +13,7 @@ func SetupMongoConn() (*mongo.Database, error) {
 	defer cancel()
 
 	clientOptions := options.Client()
-	clientOptions.ApplyURI("mongodb://localhost:27017")
+	clientOptions.ApplyURI("mongodb://localhost:27027")
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		return nil, err
