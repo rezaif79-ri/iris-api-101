@@ -17,21 +17,6 @@ type bookController struct {
 	mongoDb *mongo.Database
 }
 
-// DeleteBook implements domain.BookController.
-func (*bookController) DeleteBook(ctx *irisContext.Context) {
-	panic("unimplemented")
-}
-
-// GetOne implements domain.BookController.
-func (*bookController) GetOne(ctx *irisContext.Context) {
-	panic("unimplemented")
-}
-
-// UpdateBook implements domain.BookController.
-func (*bookController) UpdateBook(ctx *irisContext.Context) {
-	panic("unimplemented")
-}
-
 func NewBookController(db *mongo.Database) domain.BookController {
 	return &bookController{
 		mongoDb: db,
@@ -97,4 +82,19 @@ func (bc *bookController) GetList(ctx *irisContext.Context) {
 	// and client's requirements, instead of ctx.JSON:
 	// ctx.Negotiation().JSON().MsgPack().Protobuf()
 	// ctx.Negotiate(books)
+}
+
+// DeleteBook implements domain.BookController.
+func (*bookController) DeleteBook(ctx *irisContext.Context) {
+	panic("unimplemented")
+}
+
+// GetOne implements domain.BookController.
+func (*bookController) GetOne(ctx *irisContext.Context) {
+	panic("unimplemented")
+}
+
+// UpdateBook implements domain.BookController.
+func (*bookController) UpdateBook(ctx *irisContext.Context) {
+	panic("unimplemented")
 }
