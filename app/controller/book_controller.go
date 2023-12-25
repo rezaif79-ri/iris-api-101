@@ -6,9 +6,11 @@ import (
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"github.com/rezaif79-ri/iris-api-101/app/domain"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type bookController struct {
+	mongoDb *mongo.Database
 }
 
 // DeleteBook implements domain.BookController.
@@ -26,8 +28,10 @@ func (*bookController) UpdateBook(ctx *context.Context) {
 	panic("unimplemented")
 }
 
-func NewBookController() domain.BookController {
-	return &bookController{}
+func NewBookController(db *mongo.Database) domain.BookController {
+	return &bookController{
+		mongoDb: db,
+	}
 }
 
 // CreateBook implements domain.BookController.
