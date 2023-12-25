@@ -7,6 +7,7 @@ import (
 	"github.com/kataras/iris/v12"
 	irisContext "github.com/kataras/iris/v12/context"
 	"github.com/rezaif79-ri/iris-api-101/app/domain"
+	"github.com/rezaif79-ri/iris-api-101/app/util"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -64,11 +65,7 @@ func (bc *bookController) GetList(ctx *irisContext.Context) {
 	}
 
 	ctx.StatusCode(http.StatusOK)
-	ctx.JSON(map[string]interface{}{
-		"status":  http.StatusOK,
-		"message": "OK",
-		"data":    res,
-	})
+	ctx.JSON(util.RestWrapperObject(http.StatusOK, "OK", res))
 	// TIP: negotiate the response between server's prioritizes
 	// and client's requirements, instead of ctx.JSON:
 	// ctx.Negotiation().JSON().MsgPack().Protobuf()
