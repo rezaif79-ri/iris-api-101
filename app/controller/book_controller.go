@@ -46,6 +46,7 @@ func (bc *bookController) CreateBook(ctx *irisContext.Context) {
 		ctx.StopWithJSON(http.StatusConflict, util.RestWrapperObject(http.StatusConflict, "FAIL", util.MapString{
 			"error": err.Error(),
 		}))
+		return
 	}
 
 	ctx.StatusCode(iris.StatusCreated)
