@@ -11,6 +11,21 @@ import (
 type bookController struct {
 }
 
+// DeleteBook implements domain.BookController.
+func (*bookController) DeleteBook(ctx *context.Context) {
+	panic("unimplemented")
+}
+
+// GetOne implements domain.BookController.
+func (*bookController) GetOne(ctx *context.Context) {
+	panic("unimplemented")
+}
+
+// UpdateBook implements domain.BookController.
+func (*bookController) UpdateBook(ctx *context.Context) {
+	panic("unimplemented")
+}
+
 func NewBookController() domain.BookController {
 	return &bookController{}
 }

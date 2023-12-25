@@ -9,5 +9,8 @@ type Book struct {
 
 type BookController interface {
 	GetList(ctx iris.Context)
+	GetOne(ctx iris.Context)
 	CreateBook(ctx iris.Context)
+	UpdateBook(ctx iris.Context)
+	DeleteBook(ctx iris.Context)
 }
