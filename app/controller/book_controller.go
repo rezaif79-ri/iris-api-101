@@ -3,11 +3,13 @@ package controller
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/kataras/iris/v12"
 	irisContext "github.com/kataras/iris/v12/context"
 	"github.com/rezaif79-ri/iris-api-101/app/domain"
 	"github.com/rezaif79-ri/iris-api-101/app/util"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -57,11 +59,36 @@ func (bookController) CreateBook(ctx *irisContext.Context) {
 
 // GetList implements domain.BookController.
 func (bc *bookController) GetList(ctx *irisContext.Context) {
-	books := bc.mongoDb.Collection("books")
+	queryCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-	res, err := books.Find(context.Background(), nil)
+	cur, err := bc.mongoDb.Collection("books").Find(queryCtx, bson.D{})
 	if err != nil {
-		ctx.StopWithJSON(http.StatusConflict, nil)
+		ctx.StopWithJSON(http.StatusConflict,
+			util.RestWrapperObject(
+				http.StatusConflict,
+				"FAIL",
+				util.MapString{
+					"error": err.Error(),
+				}))
+		return
+	}
+	defer cur.Close(queryCtx)
+
+	var res []util.MapString
+	for cur.Next(ctx) {
+		var result util.MapString
+		err := cur.Decode(&result)
+		if err != nil {
+			ctx.StopWithJSON(http.StatusConflict, util.RestWrapperObject(http.StatusConflict, "FAIL", err))
+			return
+		}
+		res = append(res, result)
+	}
+	if err := cur.Err(); err != nil {
+		ctx.StatusCode(http.StatusConflict)
+		ctx.JSON(util.RestWrapperObject(http.StatusConflict, "FAIL", err))
+		return
 	}
 
 	ctx.StatusCode(http.StatusOK)
