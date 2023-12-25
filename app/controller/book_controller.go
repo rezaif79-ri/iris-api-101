@@ -1,10 +1,11 @@
 package controller
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/context"
+	irisContext "github.com/kataras/iris/v12/context"
 	"github.com/rezaif79-ri/iris-api-101/app/domain"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -14,17 +15,17 @@ type bookController struct {
 }
 
 // DeleteBook implements domain.BookController.
-func (*bookController) DeleteBook(ctx *context.Context) {
+func (*bookController) DeleteBook(ctx *irisContext.Context) {
 	panic("unimplemented")
 }
 
 // GetOne implements domain.BookController.
-func (*bookController) GetOne(ctx *context.Context) {
+func (*bookController) GetOne(ctx *irisContext.Context) {
 	panic("unimplemented")
 }
 
 // UpdateBook implements domain.BookController.
-func (*bookController) UpdateBook(ctx *context.Context) {
+func (*bookController) UpdateBook(ctx *irisContext.Context) {
 	panic("unimplemented")
 }
 
@@ -35,7 +36,7 @@ func NewBookController(db *mongo.Database) domain.BookController {
 }
 
 // CreateBook implements domain.BookController.
-func (bookController) CreateBook(ctx *context.Context) {
+func (bookController) CreateBook(ctx *irisContext.Context) {
 	var b domain.Book
 	err := ctx.ReadJSON(&b)
 	// TIP: use ctx.ReadBody(&b) to bind
@@ -54,27 +55,19 @@ func (bookController) CreateBook(ctx *context.Context) {
 }
 
 // GetList implements domain.BookController.
-func (bookController) GetList(ctx *context.Context) {
-	books := []domain.Book{
-		{
-			Title:  "Mastering Concurrency in Go",
-			Author: "John Doe",
-		},
-		{
-			Title:  "Go Design Patterns",
-			Author: "John Doe",
-		},
-		{
-			Title:  "Black Hat Go",
-			Author: "John Doe",
-		},
+func (bc *bookController) GetList(ctx *irisContext.Context) {
+	books := bc.mongoDb.Collection("books")
+
+	res, err := books.Find(context.Background(), nil)
+	if err != nil {
+		ctx.StopWithJSON(http.StatusConflict, nil)
 	}
 
 	ctx.StatusCode(http.StatusOK)
 	ctx.JSON(map[string]interface{}{
 		"status":  http.StatusOK,
 		"message": "OK",
-		"data":    books,
+		"data":    res,
 	})
 	// TIP: negotiate the response between server's prioritizes
 	// and client's requirements, instead of ctx.JSON:
