@@ -1,9 +1,37 @@
 version: '3.1'
 
 services:
-  mongo:
+  mongo-test:
     image: mongo:latest
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  iri-api-test:
+    build:
+      context: .
+      dockerfile: ./build/.dockerfile
+    image: rezaif79-ri/iris-api-test:0.1
+    container_name: iris-api-test
+    environment:
+    
+      API_PORT: 3000
+    ports:
+      - 8001:3000
+    depends_on:
+      mongo-test:
+        condition: service_healthy
+    restart: always
+    networks:
+      - dev-network
+
+networks:
+  # Create a new Docker network.
+  dev-network:
+    driver: bridge
