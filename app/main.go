@@ -6,6 +6,7 @@ import (
 	"github.com/kataras/iris/v12"
 	"github.com/rezaif79-ri/iris-api-101/app/config"
 	"github.com/rezaif79-ri/iris-api-101/app/router"
+	"github.com/rezaif79-ri/iris-api-101/app/util"
 )
 
 func main() {
@@ -19,7 +20,9 @@ func main() {
 
 	router.SetupIrisRouter(app, mongoDb)
 
-	app.Listen("127.0.0.1:8080")
+	appUrl := util.GetEnv("API_URL", "localhost")
+	appPort := util.GetEnv("API_PORT", "8080")
+	app.Listen(appUrl + ":" + appPort)
 	defer func() {
 		if err = mongoDb.Client().Disconnect(context.Background()); err != nil {
 			panic(err)
