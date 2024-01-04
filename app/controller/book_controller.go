@@ -96,8 +96,21 @@ func (bc *bookController) GetList(ctx *irisContext.Context) {
 }
 
 // DeleteBook implements domain.BookController.
-func (*bookController) DeleteBook(ctx *irisContext.Context) {
-	panic("unimplemented")
+func (bc *bookController) DeleteBook(ctx *irisContext.Context) {
+	queryCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	res, err := bc.mongoDb.Collection("books").DeleteOne(queryCtx, bson.D{{Key: "_id", Value: ctx.URLParam("id")}})
+	if err != nil {
+		ctx.StatusCode(http.StatusConflict)
+		ctx.JSON(util.RestWrapperObject(http.StatusConflict, "FAIL", err))
+		return
+	}
+
+	ctx.StatusCode(http.StatusAccepted)
+	ctx.JSON(util.RestWrapperObject(http.StatusAccepted, "OK", util.MapString{
+		"count": res.DeletedCount,
+	}))
 }
 
 // GetOne implements domain.BookController.
