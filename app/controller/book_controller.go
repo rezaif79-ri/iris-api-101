@@ -120,6 +120,34 @@ func (bc *bookController) GetOne(ctx *irisContext.Context) {
 }
 
 // UpdateBook implements domain.BookController.
-func (*bookController) UpdateBook(ctx *irisContext.Context) {
-	panic("unimplemented")
+func (bc *bookController) UpdateBook(ctx *irisContext.Context) {
+	var b domain.Book
+	err := ctx.ReadJSON(&b)
+	if err != nil {
+		ctx.StopWithJSON(http.StatusConflict, util.RestWrapperObject(http.StatusConflict, "FAIL", util.MapString{
+			"error": err.Error(),
+		}))
+		return
+	}
+
+	queryCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	res, err := bc.mongoDb.Collection("books").UpdateByID(queryCtx,
+		bson.D{{Key: "_id", Value: ctx.URLParam("id")}},
+		bson.D{
+			{Key: "author", Value: b.Author},
+			{Key: "title", Value: b.Title},
+		})
+	if err != nil {
+		ctx.StopWithJSON(http.StatusConflict, util.RestWrapperObject(http.StatusConflict, "FAIL", util.MapString{
+			"error": err.Error(),
+		}))
+		return
+	}
+
+	ctx.StatusCode(iris.StatusAccepted)
+	ctx.JSON(util.RestWrapperObject(http.StatusAccepted, "OK", util.MapString{
+		"_id": res.UpsertedID,
+	}))
 }
