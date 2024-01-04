@@ -14,6 +14,9 @@ func SetupIrisRouter(app *iris.Application, mongoDb *mongo.Database) *iris.Appli
 	books.Use(iris.Compression)
 	books.Get("", bookController.GetList)
 	books.Post("", bookController.CreateBook)
+	books.Put("{id}", bookController.UpdateBook)
+	books.Get("{id}", bookController.GetOne)
+	books.Delete("{id}", bookController.DeleteBook)
 
 	return app
 }
