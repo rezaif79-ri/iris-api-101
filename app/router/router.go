@@ -2,21 +2,12 @@ package router
 
 import (
 	"github.com/kataras/iris/v12"
-	"github.com/rezaif79-ri/iris-api-101/app/controller"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func SetupIrisRouter(app *iris.Application, mongoDb *mongo.Database) *iris.Application {
-	// Init controller
-	bookController := controller.NewBookController(mongoDb)
-
 	books := app.Party("books")
-	books.Use(iris.Compression)
-	books.Get("", bookController.GetList)
-	books.Post("", bookController.CreateBook)
-	books.Put("{id}", bookController.UpdateBook)
-	books.Get("{id}", bookController.GetOne)
-	books.Delete("{id}", bookController.DeleteBook)
+	AddBookRouter(books, mongoDb)
 
 	return app
 }
