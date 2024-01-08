@@ -17,6 +17,9 @@ func main() {
 	}
 
 	app := iris.New()
+	if util.GetEnv("API_DEBUG", "dev") == "dev" {
+		app.Logger().SetLevel("debug")
+	}
 
 	router.SetupIrisRouter(app, mongoDb)
 
