@@ -12,10 +12,12 @@ import (
 )
 
 func SetupIrisRouter(app *iris.Application, mongoDb *mongo.Database) *iris.Application {
-	books := app.Party("books")
-	files := app.Party("files")
+	books := app.Party("books/")
+	files := app.Party("files/")
 
 	AddBookRouter(books, mongoDb)
+	AddFileZipperRouter(files)
+
 	files.Post("", func(ctx *context.Context) {
 		inputFile, inputHeader, err := ctx.FormFile("input_file")
 		if err != nil {
