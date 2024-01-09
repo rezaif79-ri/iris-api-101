@@ -22,7 +22,9 @@ func main() {
 	if util.GetEnv("API_DEBUG", "dev") == "dev" {
 		app.Logger().SetLevel("debug")
 	}
-	app.UseRouter(customIrisLog().Handler)
+	appLogger := customIrisLog()
+	app.UseRouter(appLogger.Handler)
+	defer appLogger.Close()
 
 	router.SetupIrisRouter(app, mongoDb)
 
