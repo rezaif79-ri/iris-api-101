@@ -80,6 +80,65 @@ func (*FileZipControllerImpl) ZipOneFile(ctx *context.Context) {
 }
 
 // ZipMultiFile implements domain.FileZipController.
-func (*FileZipControllerImpl) ZipMultiFile(*context.Context) {
-	panic("unimplemented")
+func (*FileZipControllerImpl) ZipMultiFile(ctx *context.Context) {
+	fileIn, headerIn, err := ctx.FormFiles("file")
+	if err != nil {
+		ctx.StopWithJSON(409, util.RestWrapperObject(409, "FAIL", util.MapString{
+			"status":  409,
+			"message": err.Error(),
+			"data":    err,
+		}))
+		return
+	}
+
+	writerFileBuf := bytes.NewBuffer(nil)
+	var zipWriter = zip.NewWriter(writerFileBuf)
+
+	for i, v := range headerIn {
+		fileType, err := mime.ExtensionsByType(v.Header.Get("Content-Type"))
+		if err != nil {
+			ctx.StopWithJSON(409, util.RestWrapperObject(409, "FAIL", util.MapString{
+				"status":  409,
+				"message": err.Error(),
+				"data":    err,
+			}))
+			return
+		}
+
+		fileName := v.Filename + fileType[0]
+		fileWriter, err := zipWriter.Create(fileName)
+		if err != nil {
+			ctx.StopWithJSON(500, util.MapString{
+				"status":  500,
+				"message": err.Error(),
+				"data":    err,
+			})
+			return
+		}
+		if _, err := io.Copy(fileWriter, fileIn[i]); err != nil {
+			ctx.StopWithJSON(500, util.MapString{
+				"status":  500,
+				"message": err.Error(),
+				"data":    err,
+			})
+			return
+		}
+	}
+
+	if err := zipWriter.Close(); err != nil {
+		ctx.StopWithJSON(500, util.MapString{
+			"status":  500,
+			"message": err.Error(),
+			"data":    err,
+		})
+		return
+	}
+
+	var dummyFileName = "dummy.zip"
+
+	ctx.Header("Content-type", "application/zip")
+	ctx.Header("Content-Disposition", "attachment; filename=\""+dummyFileName+"\"")
+	ctx.Header("Content-Transfer-Encoding", "binary")
+	ctx.Write(writerFileBuf.Bytes())
+	writerFileBuf.Reset()
 }
