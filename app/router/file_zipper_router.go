@@ -12,4 +12,5 @@ func AddFileZipperRouter(group router.Party) {
 
 	group.Use(iris.Compression)
 	group.Post("zipper/single", zipper.ZipOneFile)
+	group.Post("zipper/multi", zipper.ZipMultiFile)
 }
