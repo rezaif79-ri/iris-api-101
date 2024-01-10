@@ -13,4 +13,5 @@ type File struct {
 
 type FileZipController interface {
 	ZipOneFile(iris.Context)
+	ZipMultiFile(iris.Context)
 }

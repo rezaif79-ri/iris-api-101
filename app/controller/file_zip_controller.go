@@ -78,3 +78,8 @@ func (*FileZipControllerImpl) ZipOneFile(ctx *context.Context) {
 	ctx.Write(writerFileBuf.Bytes())
 	writerFileBuf.Reset()
 }
+
+// ZipMultiFile implements domain.FileZipController.
+func (*FileZipControllerImpl) ZipMultiFile(*context.Context) {
+	panic("unimplemented")
+}
