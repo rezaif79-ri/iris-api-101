@@ -18,7 +18,10 @@ func main() {
 		panic("setup mongo conn error: " + err.Error())
 	}
 
+	v := config.NewValidatorRegister()
+
 	app := iris.New()
+	app.Validator = v // Add validator to iris app
 	if util.GetEnv("API_DEBUG", "dev") == "dev" {
 		app.Logger().SetLevel("debug")
 	}
