@@ -3,6 +3,6 @@
 Book REST API With Iris web framework
 
 ## Todolist
-- [ ] CRUD API for books
-- [ ] Implementing clean architecture on feature development
-- [ ] Using database mongodb to store data
+- [x] CRUD API for books
+- [x] Implementing clean architecture on feature development
+- [x] Using database mongodb to store data
