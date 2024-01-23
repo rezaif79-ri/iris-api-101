@@ -12,6 +12,10 @@ type HTTPClient struct {
 }
 
 type HTTPResponse struct {
+	Status  int
+	Message string
+	Error   error
+	Data    interface{}
 }
 
 func NewHTTPClient(timeout time.Duration) HTTPClient {
