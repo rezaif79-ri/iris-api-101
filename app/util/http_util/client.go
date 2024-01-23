@@ -53,3 +53,14 @@ func (h *HTTPClient) PutAPI(uri string, body interface{}, callback func(*http.Re
 	defer res.Body.Close()
 	callback(res, err)
 }
+
+func (h *HTTPClient) DeleteAPI(uri string, body interface{}, callback func(*http.Response, error)) {
+	bodyLoad, err := json.Marshal(body)
+	res, err := h.client.Post(uri, "application/json", bytes.NewReader(bodyLoad))
+	if err != nil {
+		callback(nil, err)
+		return
+	}
+	defer res.Body.Close()
+	callback(res, err)
+}
