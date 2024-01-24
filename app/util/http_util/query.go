@@ -16,6 +16,13 @@ func (q *httpQueryParams) SetQuery(key, value string) {
 	q.query[key] = value
 }
 
+func (q *httpQueryParams) GetQuery(key string) string {
+	if v, ok := q.query[key]; ok {
+		return v
+	}
+	return ""
+}
+
 func (q *httpQueryParams) Reset() bool {
 	if len(q.query) == 0 {
 		return false
