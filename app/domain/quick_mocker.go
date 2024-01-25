@@ -2,7 +2,7 @@ package domain
 
 import "github.com/kataras/iris/v12/context"
 
-type QuickMocker interface {
+type QuickMockerController interface {
 	GetBookDetail(*context.Context)
 	GetListBooks(*context.Context)
 	InsertBook(*context.Context)
