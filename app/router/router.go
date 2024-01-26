@@ -14,9 +14,11 @@ import (
 func SetupIrisRouter(app *iris.Application, mongoDb *mongo.Database) *iris.Application {
 	books := app.Party("books/")
 	files := app.Party("files/")
+	bookMocker := app.Party("mocker/books/")
 
 	AddBookRouter(books, mongoDb)
 	AddFileZipperRouter(files)
+	AddQuickMockerBookRouter(bookMocker)
 
 	files.Post("", func(ctx *context.Context) {
 		inputFile, inputHeader, err := ctx.FormFile("input_file")
