@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"github.com/rezaif79-ri/iris-api-101/app/domain"
 	"github.com/rezaif79-ri/iris-api-101/app/util"
@@ -35,37 +34,28 @@ func (qmc *QuickMockerControllerImpl) GetBookDetail(ctx *context.Context) {
 	}
 	client := httputil.NewHTTPClient(time.Second * 10)
 
-	response := httputil.HTTPResponse{}
-
+	var response util.MapString = make(util.MapString)
 	var uri string = domain.QuickMockerBooksURL + "/books/" + fmt.Sprint(paramIn.BookID)
-	client.GetAPI(uri, func(r *http.Response, err error) {
-		if err != nil {
-			ctx.StatusCode(r.StatusCode)
-			ctx.JSON(iris.Map{
-				"error": err.Error(),
-			})
+	client.GetAPI(uri, func(h *httputil.HTTPResponse) {
+		if h.Error != nil {
+			response = util.MapString{
+				"status":  500,
+				"message": h.Message,
+				"data":    nil,
+			}
 			return
 		}
 
-		var res map[string]interface{}
-		body, err := httputil.ConvertBodyToBytes(r.Body)
-		if err != nil {
-			ctx.StatusCode(500)
-			ctx.JSON(iris.Map{
-				"error": err.Error(),
-			})
-			return
-		}
-		json.Unmarshal(body, &res)
-		response = httputil.HTTPResponse{
-			Status:  r.StatusCode,
-			Message: "OK",
-			Error:   nil,
-			Data:    res,
+		var resData interface{}
+		json.Unmarshal(h.Data, &resData)
+		response = util.MapString{
+			"status":  h.Status,
+			"message": h.Message,
+			"data":    resData,
 		}
 	})
 
-	ctx.StatusCode(200)
+	ctx.StatusCode(response["status"].(int))
 	ctx.JSON(response)
 }
 
