@@ -12,8 +12,8 @@ func AddQuickMockerBookRouter(group router.Party) {
 
 	group.Use(iris.Compression)
 	group.Get("", mocker.GetListBooks)
-	group.Get("{id}", mocker.GetBookDetail)
+	group.Get("{id:int}", mocker.GetBookDetail)
 	group.Post("", mocker.InsertBook)
-	group.Put("{id}", mocker.UpdateBook)
-	group.Delete("{id}", mocker.DeleteBook)
+	group.Put("{id:int}", mocker.UpdateBook)
+	group.Delete("{id:int}", mocker.DeleteBook)
 }
