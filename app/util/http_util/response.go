@@ -8,7 +8,7 @@ type HTTPResponse struct {
 	Status  int
 	Message string
 	Error   error
-	Data    interface{}
+	Data    []byte
 }
 
 func convertBodyToBytes(body io.ReadCloser) ([]byte, error) {
