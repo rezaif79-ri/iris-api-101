@@ -34,29 +34,18 @@ func (qmc *QuickMockerControllerImpl) GetBookDetail(ctx *context.Context) {
 	}
 	client := httputil.NewHTTPClient(time.Second * 10)
 
-	var response util.MapString = make(util.MapString)
 	var uri string = domain.QuickMockerBooksURL + "/books/" + fmt.Sprint(paramIn.BookID)
 	client.GetAPI(uri, func(h *httputil.HTTPResponse) {
 		if h.Error != nil {
-			response = util.MapString{
-				"status":  500,
-				"message": h.Message,
-				"data":    nil,
-			}
+			util.IrisJSONResponse(ctx, 500, h.Message, nil)
 			return
 		}
-
 		var resData interface{}
 		json.Unmarshal(h.Data, &resData)
-		response = util.MapString{
-			"status":  h.Status,
-			"message": h.Message,
-			"data":    resData,
-		}
+		util.IrisJSONResponse(ctx, h.Status, h.Message, resData)
+		return
 	})
-
-	ctx.StatusCode(response["status"].(int))
-	ctx.JSON(response)
+	return
 }
 
 // GetListBooks implements domain.QuickMockerController.
