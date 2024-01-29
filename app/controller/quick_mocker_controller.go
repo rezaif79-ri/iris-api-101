@@ -27,9 +27,9 @@ func (qmc *QuickMockerControllerImpl) GetBookDetail(ctx *context.Context) {
 	}
 	var paramIn BookDetailParams
 	if err := ctx.ReadParams(&paramIn); err != nil {
-		ctx.StopWithJSON(http.StatusConflict, util.RestWrapperObject(http.StatusConflict, "FAIL", util.MapString{
+		util.IrisJSONResponse(ctx, http.StatusConflict, "FAIL", util.MapString{
 			"error": err.Error(),
-		}))
+		})
 		return
 	}
 	client := httputil.NewHTTPClient(time.Second * 10)
