@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/kataras/iris/v12"
 	irisContext "github.com/kataras/iris/v12/context"
 	"github.com/rezaif79-ri/iris-api-101/app/domain"
 	"github.com/rezaif79-ri/iris-api-101/app/util"
@@ -49,10 +48,7 @@ func (bc *bookController) CreateBook(ctx *irisContext.Context) {
 		return
 	}
 
-	ctx.StatusCode(iris.StatusCreated)
-	ctx.JSON(util.RestWrapperObject(http.StatusCreated, "OK", util.MapString{
-		"_id": res.InsertedID,
-	}))
+	util.IrisJSONResponse(ctx, http.StatusCreated, "OK", util.MapString{"_id": res.InsertedID})
 }
 
 // GetList implements domain.BookController.
@@ -86,9 +82,7 @@ func (bc *bookController) GetList(ctx *irisContext.Context) {
 		ctx.JSON(util.RestWrapperObject(http.StatusConflict, "FAIL", err))
 		return
 	}
-
-	ctx.StatusCode(http.StatusOK)
-	ctx.JSON(util.RestWrapperObject(http.StatusOK, "OK", res))
+	util.IrisJSONResponse(ctx, http.StatusOK, "OK", res)
 	// TIP: negotiate the response between server's prioritizes
 	// and client's requirements, instead of ctx.JSON:
 	// ctx.Negotiation().JSON().MsgPack().Protobuf()
@@ -127,9 +121,7 @@ func (bc *bookController) GetOne(ctx *irisContext.Context) {
 		ctx.JSON(util.RestWrapperObject(http.StatusConflict, "FAIL", err))
 		return
 	}
-
-	ctx.StatusCode(http.StatusOK)
-	ctx.JSON(util.RestWrapperObject(http.StatusOK, "OK", book))
+	util.IrisJSONResponse(ctx, http.StatusOK, "OK", book)
 }
 
 // UpdateBook implements domain.BookController.
@@ -159,8 +151,7 @@ func (bc *bookController) UpdateBook(ctx *irisContext.Context) {
 		return
 	}
 
-	ctx.StatusCode(iris.StatusAccepted)
-	ctx.JSON(util.RestWrapperObject(http.StatusAccepted, "OK", util.MapString{
+	util.IrisJSONResponse(ctx, http.StatusAccepted, "OK", util.MapString{
 		"_id": res.UpsertedID,
-	}))
+	})
 }
