@@ -49,8 +49,24 @@ func (qmc *QuickMockerControllerImpl) GetBookDetail(ctx *context.Context) {
 }
 
 // GetListBooks implements domain.QuickMockerController.
-func (*QuickMockerControllerImpl) GetListBooks(*context.Context) {
-	panic("unimplemented")
+func (*QuickMockerControllerImpl) GetListBooks(ctx *context.Context) {
+	client := httputil.NewHTTPClient(time.Second * 10)
+
+	var uri string = domain.QuickMockerBooksURL + "/books"
+	client.GetAPI(uri, func(h *httputil.HTTPResponse) {
+		if h.Error != nil {
+			util.IrisJSONResponse(ctx, 500, h.Message, nil)
+			return
+		} else if h.Status == 404 {
+			util.IrisJSONResponse(ctx, 404, "Books not found", nil)
+			return
+		}
+		var resData interface{}
+		json.Unmarshal(h.Data, &resData)
+		util.IrisJSONResponse(ctx, h.Status, h.Message, resData)
+		return
+	})
+	return
 }
 
 // InsertBook implements domain.QuickMockerController.
