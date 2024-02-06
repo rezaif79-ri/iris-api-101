@@ -30,3 +30,10 @@ var mapResponseStatusMessage map[int]string = map[int]string{
 	501: "http util: unimplemented",
 	502: "http util: bad gateway",
 }
+
+func getDefaultStatusMessage(code int) string {
+	if v, ok := mapResponseStatusMessage[code]; ok {
+		return v
+	}
+	return "http util: success"
+}
