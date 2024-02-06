@@ -30,7 +30,7 @@ func (h *HTTPClient) GetAPI(uri string, callback func(*HTTPResponse)) {
 	if err != nil {
 		callback(&HTTPResponse{
 			Status:  res.StatusCode,
-			Message: "http_util: request failed",
+			Message: getDefaultStatusMessage(res.StatusCode),
 			Error:   err,
 			Data:    nil,
 		})
@@ -47,7 +47,7 @@ func (h *HTTPClient) GetAPI(uri string, callback func(*HTTPResponse)) {
 	} else {
 		callback(&HTTPResponse{
 			Status:  res.StatusCode,
-			Message: "http_util: success",
+			Message: getDefaultStatusMessage(res.StatusCode),
 			Error:   err,
 			Data:    body,
 		})
@@ -62,7 +62,7 @@ func (h *HTTPClient) PostAPI(uri string, body interface{}, callback func(*HTTPRe
 	if err != nil {
 		callback(&HTTPResponse{
 			Status:  res.StatusCode,
-			Message: "http_util: request failed",
+			Message: getDefaultStatusMessage(res.StatusCode),
 			Error:   err,
 			Data:    nil,
 		})
@@ -79,7 +79,7 @@ func (h *HTTPClient) PostAPI(uri string, body interface{}, callback func(*HTTPRe
 	} else {
 		callback(&HTTPResponse{
 			Status:  res.StatusCode,
-			Message: "http_util: success",
+			Message: getDefaultStatusMessage(res.StatusCode),
 			Error:   err,
 			Data:    body,
 		})
@@ -111,7 +111,7 @@ func (h *HTTPClient) PutAPI(uri string, body interface{}, callback func(*HTTPRes
 	} else {
 		callback(&HTTPResponse{
 			Status:  res.StatusCode,
-			Message: "http_util: success",
+			Message: getDefaultStatusMessage(res.StatusCode),
 			Error:   err,
 			Data:    body,
 		})
@@ -126,7 +126,7 @@ func (h *HTTPClient) DeleteAPI(uri string, body interface{}, callback func(*HTTP
 	if err != nil {
 		callback(&HTTPResponse{
 			Status:  res.StatusCode,
-			Message: "http_util: request failed",
+			Message: getDefaultStatusMessage(res.StatusCode),
 			Error:   err,
 			Data:    nil,
 		})
@@ -143,7 +143,7 @@ func (h *HTTPClient) DeleteAPI(uri string, body interface{}, callback func(*HTTP
 	} else {
 		callback(&HTTPResponse{
 			Status:  res.StatusCode,
-			Message: "http_util: success",
+			Message: getDefaultStatusMessage(res.StatusCode),
 			Error:   err,
 			Data:    body,
 		})
