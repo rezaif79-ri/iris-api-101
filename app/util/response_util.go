@@ -1,11 +1,13 @@
 package util
 
-import "github.com/kataras/iris/v12/context"
+import (
+	"github.com/kataras/iris/v12/context"
+)
 
 type MapString map[string]interface{}
 
-func RestWrapperObject(status int, message string, data interface{}) map[string]interface{} {
-	return map[string]interface{}{
+func RestWrapperObject(status int, message string, data interface{}) MapString {
+	return MapString{
 		"status":  status,
 		"message": message,
 		"data":    data,
