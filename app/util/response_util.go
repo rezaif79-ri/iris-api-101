@@ -15,10 +15,6 @@ func RestWrapperObject(status int, message string, data interface{}) map[string]
 // IrisJSONResponse will write response to client by iris context
 func IrisJSONResponse(ctx *context.Context, statusCode int, message string, data interface{}) {
 	ctx.StatusCode(statusCode)
-	ctx.JSON(RestWrapperObject(statusCode, message, MapString{
-		"status_code": statusCode,
-		"message":     message,
-		"data":        data,
-	}))
+	ctx.JSON(RestWrapperObject(statusCode, message, data))
 	return
 }
